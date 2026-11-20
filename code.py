@@ -68,9 +68,13 @@ while shop_open:
             case "inventory":
                 print("opening backpack...")
                 time.sleep(2)
-                for item in inventory:
-                    print(f"{item}\n")
-                    time.sleep(2)
+                total_items = len(inventory)
+                if total_items == 0:
+                    print("Your inventory is empty.")
+                else:
+                    for item in inventory:
+                        print(f"{item}\n")
+                        time.sleep(2)
             case _:
                 print("Invalid choice. Please select an item from the shop or type 'exit' to leave.")
         time.sleep(2)
