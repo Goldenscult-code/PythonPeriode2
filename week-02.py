@@ -17,10 +17,10 @@ shop_open = True
 
 #shop
 shopitems = [
-    {"id": 1, "name": "Sword", "price": 50},
-    {"id": 2, "name": "Shield", "price": 40},
-    {"id": 3, "name": "Potion", "price": 20},
-    {"id": 4, "name": "Bow", "price": 60}
+    {"id": 1, "name": "sword", "price": 50},
+    {"id": 2, "name": "shield", "price": 40},
+    {"id": 3, "name": "potion", "price": 20},
+    {"id": 4, "name": "bow", "price": 60}
 ]
 shopitemschecker = ["sword", "shield", "potion", "bow"]
 
@@ -52,36 +52,40 @@ def canbuy(gold, price):
 def buy_item(gold, item, price):
     gold -= price
     inventory.append(item)
-    print(f"You bought a {item} and have {gold} bucks!")
+    if gold >= 0:
+        print(f"You bought a {item} and still have {gold} gold!")
+    else:
+        print(f"You bought a {item} and now have no gold")
     return(gold)
 
      
 
 while shop_open:
     show_menu()
-    choice = input("what do you want to buy? (type the item/name) \n> ")
+    choice = input("what do you want to buy? (type the item/name) \n> ").strip().lower()
     print()
+
     if choice == "exit":
         shop_open = False
-        print(f"Thanks for visiting the shop {player_name} you still have {player_gold} gold!")
+        print(f"Thanks for visiting the shop {player_name}, you still have {player_gold} gold!")
+    elif choice == "inventory":
+        show_inventory(inventory)
     else:
-        match choice:
-            case "inventory":
-                show_inventory(inventory)
-            case _:
-                if choice in shopitemschecker:
-                    for item in shopitems:
-                        if item["name"] == choice:
-                            price = item["price"]
-                            item_name = item["name"]
-                        else:
-                             price = item["price"]
-                             item_name = item["name"]
-                    if canbuy(player_gold, price) == True:
-                        player_gold = buy_item(player_gold, item_name, price)
-                    else:
-                        print(f"You don't have enough gold for a {item_name}.")
-                else:
-                    print(f"{choice} is not available in the shop.")
-        time.sleep(2)
-        print("\n")
+        selected_item = None
+        for item in shopitems:
+            if item["name"].lower() == choice:
+                selected_item = item
+                break
+
+        if selected_item is not None:
+            price = selected_item["price"]
+            item_name = selected_item["name"]
+            if canbuy(player_gold, price):
+                player_gold = buy_item(player_gold, item_name, price)
+            else:
+                print(f"You don't have enough gold for a {item_name}.")
+        else:
+            print(f"{choice} is not available in the shop.")
+
+    time.sleep(2)
+    print("\n")
